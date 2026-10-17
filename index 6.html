@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#EEF5FA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>CRYVA</title>
+<style>
+:root{--bg:#EEF5FA;--sf:#EEF5FA;--pri:#6EA8E5;--tx:#17212B;--tx2:#71808F;--sd:rgba(146,170,193,.55);--sl:rgba(255,255,255,.95);--hl:rgba(23,33,43,.07);--onp:#fff;--ease:cubic-bezier(.32,.72,0,1);
+--up:6px 6px 14px var(--sd),-6px -6px 14px var(--sl),inset 0 0 0 0 transparent,inset 0 0 0 0 transparent;
+--dn:0 0 0 0 transparent,0 0 0 0 transparent,inset 4px 4px 9px var(--sd),inset -4px -4px 9px var(--sl)}
+[data-t=dark]{--bg:#101820;--sf:#17232D;--pri:#79B4EE;--tx:#F4F8FB;--tx2:#8FA0AE;--sd:rgba(3,7,11,.65);--sl:rgba(255,255,255,.05);--hl:rgba(255,255,255,.07);--onp:#0B141C}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);transition:background .4s}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",Roboto,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden}
+button,input{font:inherit;color:inherit;border:0;outline:0;background:none}
+button{cursor:pointer}
+#app{position:relative;max-width:520px;height:100vh;height:100dvh;margin:0 auto;overflow:hidden}
+.scr,.v{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .35s var(--ease),transform .35s var(--ease),visibility .35s}
+.scr.on,.v.on{opacity:1;visibility:visible}
+.v{transform:translateY(10px);padding:calc(env(safe-area-inset-top,0px) + 30px) 24px calc(env(safe-area-inset-bottom,0px) + 120px);overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.v::-webkit-scrollbar{display:none}
+.v.on{transform:none}
+.up,.dn,.btn,.c,.chip,nav{transition:box-shadow .3s var(--ease),background .35s,color .3s,transform .18s var(--ease)}
+.up{background:var(--sf);box-shadow:var(--up)}
+.dn{background:var(--bg);box-shadow:var(--dn)}
+.pr:active{transform:scale(.97);box-shadow:var(--dn)}
+.brand{font-size:13px;font-weight:600;letter-spacing:.34em;color:var(--tx2);text-indent:.34em;text-align:center}
+h1{font-size:32px;font-weight:650;letter-spacing:-.025em;line-height:1.15}
+.sub{color:var(--tx2);font-size:16px;margin-top:6px}
+.lbl{font-size:11.5px;font-weight:600;letter-spacing:.14em;color:var(--tx2)}
+/* splash + welcome */
+#splash{display:flex;flex-direction:column;align-items:center;justify-content:center}
+#splash .logo{font-size:40px;font-weight:600;letter-spacing:.5em;text-indent:.5em;opacity:0}
+#splash .tag{margin-top:16px;font-size:11px;letter-spacing:.3em;text-indent:.3em;color:var(--tx2);opacity:0}
+#splash{transition:opacity .6s var(--ease),visibility .6s}
+#splash.on .logo{animation:lg 1.1s var(--ease) forwards}
+#splash.on .tag{animation:fi .8s .45s var(--ease) forwards}
+@keyframes lg{from{opacity:0;letter-spacing:.8em;text-indent:.8em}to{opacity:1;letter-spacing:.34em;text-indent:.34em}}
+@keyframes fi{to{opacity:1}}
+#welcome{padding:calc(env(safe-area-inset-top,0px) + 48px) 28px calc(env(safe-area-inset-bottom,0px) + 28px);display:flex;flex-direction:column;overflow-y:auto}
+#welcome .f{margin-top:36px}
+#welcome .lbl{margin:0 0 12px 4px}
+.in{width:100%;padding:18px 20px;border-radius:20px;font-size:17px;user-select:text;-webkit-user-select:text;transition:box-shadow .3s var(--ease),background .35s}
+.in:focus{box-shadow:var(--dn),0 0 0 1.5px var(--pri)}
+.in::placeholder{color:var(--tx2);opacity:.7}
+.in.shake{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.chips{display:flex;flex-wrap:wrap;gap:12px}
+.chip{padding:13px 20px;border-radius:16px;font-size:15px;font-weight:600;color:var(--tx2)}
+.chip.sel{color:var(--pri);background:var(--bg);box-shadow:var(--dn)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:64px;border-radius:32px;background:var(--pri);color:var(--onp);font-size:15px;font-weight:650;letter-spacing:.14em;box-shadow:0 10px 22px -8px color-mix(in srgb,var(--pri) 70%,transparent),0 0 0 0 transparent,inset 0 0 0 0 transparent,inset 0 0 0 0 transparent}
+.btn:active{background:var(--pri)}
+#start{margin-top:auto}
+.sp{flex:1;min-height:32px}
+/* home */
+#greet{margin-top:34px}
+.card{margin-top:30px;border-radius:36px;padding:28px 24px 24px;text-align:center}
+#dose{font-size:76px;font-weight:600;letter-spacing:-.04em;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}
+#lab{margin-top:10px}
+#take{margin-top:28px}
+#take .ck{width:0;height:22px;opacity:0;margin-right:0;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:width .35s var(--ease),opacity .3s,margin .35s var(--ease)}
+#take .ck path{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .45s .1s var(--ease)}
+#take.done{background:var(--bg);color:var(--pri);box-shadow:var(--dn)}
+#take.done .ck{width:22px;opacity:1;margin-right:10px}
+#take.done .ck path{stroke-dashoffset:0}
+#take.burst{animation:bu .7s var(--ease)}
+@keyframes bu{0%{filter:none}40%{filter:drop-shadow(0 0 0 transparent) brightness(1.06)}100%{filter:none}}
+.row{margin-top:18px;border-radius:24px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.row b{font-size:21px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.pop{animation:pp .4s var(--ease)}
+@keyframes pp{from{opacity:.2;transform:translateY(6px)}}
+#wk{display:flex;justify-content:space-between;margin-top:18px}
+.dy{display:flex;flex-direction:column;align-items:center;gap:12px;font-size:12px;font-weight:600;color:var(--tx2)}
+.dy.td{color:var(--pri)}
+.dy.fu{opacity:.45}
+.c{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--pri)}
+.c svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.c b{width:4px;height:4px;border-radius:50%;background:var(--tx2);opacity:.6}
+.dy.td .c:not(.on){box-shadow:var(--dn),0 0 0 1.5px color-mix(in srgb,var(--pri) 55%,transparent)}
+.c.ani{animation:pp .5s var(--ease)}
+.sec{margin-top:34px}
+.cal{margin-top:22px;border-radius:30px;padding:18px 14px 16px}
+.cal>.lbl{padding:0 6px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin:10px 0 12px}
+.ch b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.cb{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--tx2);box-shadow:4px 4px 10px var(--sd),-4px -4px 10px var(--sl),inset 0 0 0 0 transparent,inset 0 0 0 0 transparent}
+.cb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cw,.cg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cw span{text-align:center;font-size:11px;font-weight:600;color:var(--tx2);padding-bottom:8px}
+.cc{position:relative;aspect-ratio:1;min-width:0;display:flex;align-items:center;justify-content:center;border-radius:14px;font-size:14px;font-weight:500;color:var(--tx2);font-variant-numeric:tabular-nums;transition:box-shadow .25s var(--ease),background .3s,color .3s,transform .15s var(--ease)}
+.cc:active{transform:scale(.92)}
+.cc.on{background:var(--bg);color:var(--pri);font-weight:650;box-shadow:var(--dn)}
+.cc.td{color:var(--tx);font-weight:700}
+.cc.on.td{color:var(--pri)}
+.cc.td::after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--pri)}
+.cc.fu{opacity:.4}
+.cc.sl{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--pri) 70%,transparent)}
+.cc.on.sl{box-shadow:var(--dn),0 0 0 1.5px color-mix(in srgb,var(--pri) 70%,transparent)}
+.cg.sw{animation:sw .22s var(--ease)}
+@keyframes sw{from{opacity:0;transform:translateX(var(--dx,8px))}}
+.ccap{min-height:22px;margin-top:14px;text-align:center;font-size:13.5px;color:var(--tx2);font-variant-numeric:tabular-nums}
+@media(max-width:340px){.cal{padding:16px 8px 14px}.cw,.cg{gap:2px}}
+#nd:empty,#nc:empty{display:none}
+#nv{color:var(--pri);font-size:13px;letter-spacing:.22em}
+#chat{display:flex;flex-direction:column;margin-top:14px}
+.msg{max-width:86%;padding:13px 16px;border-radius:20px;font-size:15px;line-height:1.45;margin-top:12px;animation:pp .35s var(--ease);user-select:text;-webkit-user-select:text}
+.msg.nz{animation:none}
+.msg.a{align-self:flex-start;background:var(--sf);border-bottom-left-radius:6px;box-shadow:4px 4px 10px var(--sd),-4px -4px 10px var(--sl)}
+.msg.u{align-self:flex-end;background:var(--pri);color:var(--onp);border-bottom-right-radius:6px;box-shadow:0 8px 18px -8px color-mix(in srgb,var(--pri) 70%,transparent)}
+.qh{margin:28px 4px 12px}
+.qb{text-align:left;font-size:14px;padding:12px 16px}
+#nc{margin-top:26px;font-size:13.5px;text-align:center;color:var(--tx2)}
+/* history */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
+.st{border-radius:20px;padding:14px 16px 13px;min-width:0}
+.st .lbl{display:block;font-size:10.5px;letter-spacing:.1em;line-height:1.3}
+.st b{display:block;font-size:clamp(22px,7vw,26px);font-weight:600;letter-spacing:-.02em;margin-top:6px;white-space:nowrap}
+.li{display:flex;justify-content:space-between;align-items:center;padding:17px 4px;border-bottom:1px solid var(--hl);font-size:16px}
+.li span:last-child{color:var(--tx2);font-size:15px}
+.li.ok span:last-child{color:var(--pri);font-weight:600}
+.empty{color:var(--tx2);padding:22px 4px;line-height:1.5}
+/* profile */
+.fld{margin-top:28px}
+.fld .lbl{margin:0 0 12px 4px}
+#reset{margin-top:44px;height:58px;border-radius:29px;color:#E0736B;font-size:15px;font-weight:600;width:100%}
+.ft{margin-top:36px}
+/* nav */
+nav{position:absolute;left:24px;right:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);height:68px;border-radius:34px;display:flex;align-items:center;justify-content:space-around;padding:0 10px;z-index:5}
+nav button{position:relative;flex:1;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--tx2);font-size:11px;font-weight:600;transition:color .3s,transform .18s var(--ease)}
+nav button:active{transform:scale(.92)}
+nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--pri)}
+nav button::after{content:"";position:absolute;bottom:-1px;width:4px;height:4px;border-radius:50%;background:var(--pri);transform:scale(0);transition:transform .3s var(--ease)}
+nav button.on::after{transform:scale(1)}
+/* modal */
+#modal,#news{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(10,16,22,.4);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;z-index:20}
+#modal.on,#news.on{opacity:1;visibility:visible}
+.sheet{width:100%;max-width:340px;border-radius:30px;padding:28px 24px 22px;text-align:center;transform:scale(.95) translateY(8px);transition:transform .3s var(--ease)}
+#modal.on .sheet,#news.on .sheet{transform:none}
+.sheet h2{font-size:19px;font-weight:650}
+.sheet p{color:var(--tx2);font-size:14.5px;margin-top:8px;line-height:1.4}
+.acts{display:flex;gap:12px;margin-top:24px}
+.acts button{flex:1;height:52px;border-radius:26px;font-size:15px;font-weight:600}
+.acts .rs{color:#E0736B}
+#lt{margin-top:16px;min-height:38px;justify-content:center;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13.5px;color:var(--tx2)}
+.vn{text-align:center;font-size:11px;letter-spacing:.12em;color:var(--tx2);opacity:.7;margin-top:8px}
+#news .sheet{max-width:360px;text-align:left;padding:34px 28px 28px}
+#news h1{font-size:28px}
+.ni{display:flex;gap:14px;margin-top:24px}
+#news.on .ni{animation:pp .5s var(--ease) both}
+.nck{flex:none;width:18px;height:18px;margin-top:3px;fill:none;stroke:var(--pri);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.ni b{font-size:16px;font-weight:600}
+.ni p{color:var(--tx2);font-size:14.5px;line-height:1.4;margin-top:4px}
+#ng{margin-top:32px}
+#news .sheet{max-height:calc(100dvh - 56px);overflow-y:auto;scrollbar-width:none}
+#news .lbl{margin-bottom:10px}
+#news h1{line-height:1.2}
+#news .sub{line-height:1.45}
+.ni b{font-size:11.5px;letter-spacing:.14em;color:var(--pri);font-weight:600}
+.ni p{margin-top:6px}
+#uw{display:flex;justify-content:center;max-height:0;opacity:0;overflow:hidden;transition:max-height .35s var(--ease),opacity .25s}
+#uw.on{max-height:70px;opacity:1}
+#undo{height:38px;padding:0 22px;margin:12px 0;border-radius:19px;font-size:12px;font-weight:600;letter-spacing:.16em;color:var(--tx2);background:var(--sf);box-shadow:3px 3px 8px var(--sd),-3px -3px 8px var(--sl),inset 0 0 0 0 transparent,inset 0 0 0 0 transparent;transition:box-shadow .3s var(--ease),background .35s,color .3s,transform .18s var(--ease)}
+#undo:active{box-shadow:var(--dn)}
+#undo:disabled{pointer-events:none}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01s!important;animation-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<section class="scr" id="splash"><div class="logo">CRYVA</div><div class="tag" data-i="tag">TRACK YOUR CONSISTENCY</div></section>
+
+<section class="scr" id="welcome">
+  <div class="brand">CRYVA</div>
+  <div class="f"><h1 data-i="wTitle">Welcome to CRYVA</h1><p class="sub" data-i="wSub">Stay consistent. One day at a time.</p></div>
+  <div class="f"><div class="lbl" data-i="yname">YOUR NAME</div><input id="nm" class="in dn" placeholder="Name" data-ip="nameph" maxlength="24" autocomplete="off" enterkeyhint="done"></div>
+  <div class="f"><div class="lbl" data-i="dd">DAILY DOSE</div><div class="chips" id="wch"></div></div>
+  <div class="sp"></div>
+  <button class="btn pr" id="start" data-i="start">START CRYVA</button>
+</section>
+
+<section class="scr" id="main">
+  <div class="v" id="v-home">
+    <div class="brand">CRYVA</div>
+    <h1 id="greet"></h1><p class="sub" data-i="stay">Stay consistent.</p>
+    <div class="card up">
+      <div class="lbl" data-i="dd">DAILY DOSE</div>
+      <div id="dose"></div><div class="lbl" id="lab"></div>
+      <button class="btn pr" id="take" aria-pressed="false"><svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" pathLength="1"/></svg><span id="tl"></span></button>
+      <div id="lt"></div>
+      <div id="uw"><button class="pr" id="undo" disabled aria-label="Undo today's dose" data-ia="undoA" data-i="undo">UNDO</button></div>
+    </div>
+    <div class="row dn"><span class="lbl" data-i="cstreak">CURRENT STREAK</span><b id="sv"></b></div>
+    <div class="sec"><div class="lbl" data-i="week">THIS WEEK</div><div id="wk"></div></div>
+  </div>
+
+  <div class="v" id="v-history">
+    <h1 data-i="hist">History</h1>
+    <div class="stats" id="stats"></div>
+    <div class="cal up" id="cal"><div class="lbl" data-i="ycal">YOUR CALENDAR</div>
+      <div class="ch"><button class="cb up pr" id="cprev" aria-label="Previous month" data-ia="prev"><svg viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></svg></button><b id="cmon" aria-live="polite"></b><button class="cb up pr" id="cnext" aria-label="Next month" data-ia="next"><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button></div>
+      <div class="cw" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+      <div class="cg" id="cgrid"></div><div class="ccap" id="ccap"></div></div>
+    <div class="sec" id="list"></div>
+  </div>
+
+  <div class="v" id="v-assistant">
+    <h1>CRYVA Assistant</h1><p class="sub" data-i="aSub"></p>
+    <div id="chat"></div><div class="lbl qh" data-i="aAsk"></div><div class="chips" id="qs"></div>
+  </div>
+
+  <div class="v" id="v-profile">
+    <h1 data-i="prof">Profile</h1>
+    <div class="fld"><div class="lbl" data-i="name">NAME</div><input id="pn" class="in dn" maxlength="24" autocomplete="off" enterkeyhint="done"></div>
+    <div class="fld"><div class="lbl" data-i="dd">DAILY DOSE</div><div class="chips" id="pch"></div></div>
+    <div class="fld"><div class="lbl" data-i="appear">APPEARANCE</div><div class="chips" id="tch"></div></div>
+    <div class="fld"><div class="lbl" data-i="lang">LANGUAGE</div><div class="chips" id="lch"></div></div>
+    <button class="up pr" id="reset" data-i="reset">Reset data</button>
+    <div class="brand ft">CRYVA</div><div class="vn" id="ver"></div>
+  </div>
+
+  <nav class="up">
+    <button data-v="home" class="on" aria-label="Home" data-ia="nHome"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span data-i="nHome">Home</span></button>
+    <button data-v="history" aria-label="History" data-ia="nHist"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span data-i="nHist">History</span></button>
+    <button data-v="assistant" aria-label="Assistant" data-ia="nAsst"><svg viewBox="0 0 24 24"><path d="M5 6.5A2.500 2.500 0 0 1 7.500 4h9A2.500 2.500 0 0 1 19 6.500v6a2.500 2.500 0 0 1-2.500 2.500H11l-4 3.500V15a2.500 2.500 0 0 1-2-2.500z"/></svg><span data-i="nAsst">Assistant</span></button>
+    <button data-v="profile" aria-label="Profile" data-ia="nProf"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c.9-3.8 3.8-5.8 7.5-5.8s6.600 2 7.500 5.800"/></svg><span data-i="nProf">Profile</span></button>
+  </nav>
+</section>
+</div>
+
+<div id="modal"><div class="sheet up"><h2 data-i="mT">Reset all CRYVA data?</h2><p data-i="mP">Your name, doses and history will be deleted from this device.</p>
+<div class="acts"><button class="dn pr" id="cn" data-i="cancel">Cancel</button><button class="dn pr rs" id="rs" data-i="rs">Reset</button></div></div></div>
+
+<div id="news"><div class="sheet up"><div class="lbl" id="nv"></div><h1 id="nt"></h1><p class="sub" id="nd"></p><div id="ni"></div><p id="nc"></p><button class="btn pr" id="ng" data-i="got">GOT IT</button></div></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const DOSES=[3,3.5,5,7,10],CK='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const def=()=>({name:'',dose:5,theme:null,logs:{},times:{},best:0,undo:null,done:false});
+const VERSION='2.0',SEEN='cryva_seen_version';
+const L={en:{"tag": "TRACK YOUR CONSISTENCY", "wTitle": "Welcome to CRYVA", "wSub": "Stay consistent. One day at a time.", "yname": "YOUR NAME", "nameph": "Name", "dd": "DAILY DOSE", "start": "START CRYVA", "stay": "Stay consistent.", "cstreak": "CURRENT STREAK", "week": "THIS WEEK", "undo": "UNDO", "undoA": "Undo today’s dose", "hist": "History", "ycal": "YOUR CALENDAR", "prev": "Previous month", "next": "Next month", "prof": "Profile", "name": "NAME", "appear": "APPEARANCE", "lang": "LANGUAGE", "reset": "Reset data", "nHome": "Home", "nHist": "History", "nAsst": "Assistant", "nProf": "Profile", "mT": "Reset all CRYVA data?", "mP": "Your name, doses and history will be deleted from this device.", "cancel": "Cancel", "rs": "Reset", "got": "GOT IT", "gm": "Good morning", "ga": "Good afternoon", "ge": "Good evening", "taken": "TAKEN", "takeBtn": "TAKE CREATINE", "labT": "TAKEN TODAY", "labN": "TODAY", "lastL": "Last taken", "lastLbl": "LAST TAKEN", "lastNone": "No doses recorded yet", "yest": "Yesterday", "today": "Today", "day1": "DAY", "days": "DAYS", "wdl": "MTWTFSS", "tot": "TOTAL DOSES", "bst": "BEST STREAK", "cons": "CONSISTENCY", "recent": "RECENT", "empty": "No doses yet. Take your first one from Home.", "notTaken": "— Not taken", "light": "Light", "dark": "Dark", "calSum": "{n} {n:dose|doses} recorded in {m}", "noDose": "No dose recorded", "ariaOn": "dose recorded", "ariaOff": "no dose recorded", "aSub": "Answers based on your recorded doses.", "aAsk": "ASK ABOUT YOUR PROGRESS", "a_intro": "Hi! I’m CRYVA Assistant. Ask me about your dose history and progress.", "q_total": "How many doses have I recorded?", "q_week": "How many doses have I recorded this week?", "q_month": "How many doses have I recorded this month?", "q_cons": "How consistent have I been this month?", "q_streak": "What is my current streak?", "q_best": "What is my best streak?", "q_first": "When did I record my first dose?", "q_days": "How many days have I recorded a dose this month?", "a_total": "You’ve recorded {n} {n:dose|doses} so far.", "a_week": "You’ve recorded {n} {n:dose|doses} this week.", "a_month": "You’ve recorded {n} {n:dose|doses} this month.", "a_cons": "Your consistency this month is {p}%.", "a_streak": "Your current streak is {n} {n:day|days}.", "a_best": "Your best streak is {n} {n:day|days}.", "a_first": "Your first recorded dose was on {d}.", "a_days": "You’ve recorded a dose on {n} different {n:day|days} this month.", "a_none": "You haven’t recorded a dose yet. Take your first one from Home.", "a_nodata": "There isn’t enough recorded data to calculate that yet."},es:{"tag": "SIGUE TU CONSTANCIA", "wTitle": "Bienvenido a CRYVA", "wSub": "Sé constante. Un día a la vez.", "yname": "TU NOMBRE", "nameph": "Nombre", "dd": "DOSIS DIARIA", "start": "EMPEZAR CON CRYVA", "stay": "Sé constante.", "cstreak": "RACHA ACTUAL", "week": "ESTA SEMANA", "undo": "DESHACER", "undoA": "Deshacer la toma de hoy", "hist": "Historial", "ycal": "TU CALENDARIO", "prev": "Mes anterior", "next": "Mes siguiente", "prof": "Perfil", "name": "NOMBRE", "appear": "APARIENCIA", "lang": "IDIOMA", "reset": "Restablecer datos", "nHome": "Inicio", "nHist": "Historial", "nAsst": "Asistente", "nProf": "Perfil", "mT": "¿Restablecer todos los datos de CRYVA?", "mP": "Tu nombre, tus tomas y tu historial se borrarán de este dispositivo.", "cancel": "Cancelar", "rs": "Restablecer", "got": "ENTENDIDO", "gm": "Buenos días", "ga": "Buenas tardes", "ge": "Buenas noches", "taken": "TOMADA", "takeBtn": "TOMAR CREATINA", "labT": "TOMADA HOY", "labN": "HOY", "lastL": "Última toma", "lastLbl": "ÚLTIMA TOMA", "lastNone": "Aún no hay tomas registradas", "yest": "Ayer", "today": "Hoy", "day1": "DÍA", "days": "DÍAS", "wdl": "LMXJVSD", "tot": "TOMAS TOTALES", "bst": "MEJOR RACHA", "cons": "CONSTANCIA", "recent": "RECIENTES", "empty": "Aún no hay tomas. Registra la primera desde Inicio.", "notTaken": "— Sin tomar", "light": "Claro", "dark": "Oscuro", "calSum": "{n} {n:toma registrada|tomas registradas} en {m}", "noDose": "Sin toma registrada", "ariaOn": "toma registrada", "ariaOff": "sin toma registrada", "aSub": "Respuestas basadas en tus tomas registradas.", "aAsk": "PREGUNTA SOBRE TU PROGRESO", "a_intro": "¡Hola! Soy CRYVA Assistant. Puedes preguntarme sobre tu historial de tomas y tu progreso.", "q_total": "¿Cuántas tomas he registrado?", "q_week": "¿Cuántas tomas he registrado esta semana?", "q_month": "¿Cuántas tomas he registrado este mes?", "q_cons": "¿Qué constancia he tenido este mes?", "q_streak": "¿Cuál es mi racha actual?", "q_best": "¿Cuál es mi mejor racha?", "q_first": "¿Cuándo registré mi primera toma?", "q_days": "¿En cuántos días he registrado una toma este mes?", "a_total": "Has registrado {n} {n:toma|tomas} hasta ahora.", "a_week": "Has registrado {n} {n:toma|tomas} esta semana.", "a_month": "Has registrado {n} {n:toma|tomas} este mes.", "a_cons": "Tu constancia este mes es del {p} %.", "a_streak": "Tu racha actual es de {n} {n:día|días}.", "a_best": "Tu mejor racha es de {n} {n:día|días}.", "a_first": "Registraste tu primera toma el {d}.", "a_days": "Has registrado una toma en {n} {n:día distinto|días distintos} este mes.", "a_none": "Aún no has registrado ninguna toma. Registra la primera desde Inicio.", "a_nodata": "Todavía no hay suficientes datos registrados para calcularlo."}};
+let LANG='en';try{const l=localStorage.getItem('cryva_lang');if(l=='es'||l=='en')LANG=l}catch(e){}
+function tr(k,v){let s=(L[LANG]&&L[LANG][k])||L.en[k]||k;if(v)s=s.replace(/\{n:([^|}]*)\|([^}]*)\}/g,(_,a,b)=>v.n==1?a:b).replace(/\{(\w+)\}/g,(_,x)=>v[x]!==undefined?v[x]:'');return s}
+const LOC=()=>LANG=='es'?'es-ES':'en-US',cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const NEWS={'2.0':{en:{t:'Your CRYVA experience, evolved.',i:[['MEET CRYVA ASSISTANT','Explore your personal progress with interactive questions and answers based on your recorded data.'],['YOUR LANGUAGE, YOUR CRYVA','Switch between English and Spanish throughout the app.'],['DESIGNED AROUND YOUR PROGRESS','A more accessible experience that keeps your existing history and preferences intact.']]},es:{t:'Tu experiencia CRYVA, evolucionada.',i:[['CONOCE A CRYVA ASSISTANT','Explora tu progreso personal con preguntas y respuestas interactivas basadas en tus datos registrados.'],['TU IDIOMA, TU CRYVA','Cambia entre inglés y español en toda la aplicación.'],['PENSADA PARA TU PROGRESO','Una experiencia más accesible que mantiene intacto tu historial y tus preferencias.']]}}};
+const seen=()=>{try{return localStorage.getItem(SEEN)}catch(e){return null}};
+const markSeen=()=>{try{localStorage.setItem(SEEN,VERSION)}catch(e){}};
+let S=def(),cur='home',wd=5;
+try{S={...def(),...JSON.parse(localStorage.getItem('cryva')||'{}')}}catch(e){}
+const save=()=>{try{localStorage.setItem('cryva',JSON.stringify(S))}catch(e){}};
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const ago=n=>{const d=new Date();d.setDate(d.getDate()-n);return d};
+const fd=v=>(v%1?v.toFixed(1):v)+' g';
+const sysTheme=()=>matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+function theme(t){S.theme=t;document.documentElement.dataset.t=t;$('meta[name=theme-color]').content=t=='dark'?'#101820':'#EEF5FA'}
+const undoOK=()=>{const u=S.undo,k=key(ago(0));return !!(u&&u.k===k&&S.logs[k]!==undefined)};
+function doUndo(){if(!undoOK())return;const u=S.undo,k=u.k;delete S.logs[k];if(S.times)delete S.times[k];S.best=u.best;S.undo=null;save();home(false)}
+function lastTaken(){const ks=Object.keys(S.logs).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort(),k=ks[ks.length-1];if(!k)return null;
+  const[y,m,d]=k.split('-').map(Number),t=(S.times||{})[k],p=[tr('lastL')];
+  if(k===key(ago(1)))p.push(tr('yest'));else if(k===key(ago(0))&&!(typeof t==='number'&&isFinite(t)))p.push(tr('today'));else if(k!==key(ago(0)))p.push(new Date(y,m-1,d).toLocaleDateString(LOC(),y===new Date().getFullYear()?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'}));
+  if(typeof t==='number'&&isFinite(t)){const x=new Date(t);p.push(pad(x.getHours())+':'+pad(x.getMinutes()))}
+  return p.join(' · ')}
+function streak(){let n=S.logs[key(ago(0))]?0:1,c=0;while(S.logs[key(ago(n))]){c++;n++}return c}
+function bestCalc(){let b=0,c=0,p=null;for(const s of Object.keys(S.logs).sort()){const[y,m,d]=s.split('-').map(Number),t=Date.UTC(y,m-1,d);c=p!==null&&t-p===864e5?c+1:1;b=Math.max(b,c);p=t}return Math.max(b,S.best)}
+function consistency(){const k=Object.keys(S.logs).sort();if(!k.length)return 0;const[y,m,d]=k[0].split('-').map(Number),t=new Date();t.setHours(0,0,0,0);let n=Math.round((t-new Date(y,m-1,d))/864e5)+1;if(!S.logs[key(ago(0))])n--;return Math.min(100,Math.round(k.length/Math.max(n,1)*100))}
+function pop(el,t){if(el.textContent!==t){el.textContent=t;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}}
+function chips(el,list,sel,fmt,cb){el.innerHTML='';list.forEach(v=>{const b=document.createElement('button');b.className='chip up pr'+(v===sel?' sel':'');b.textContent=fmt(v);b.onclick=()=>{[...el.children].forEach((c,i)=>c.classList.toggle('sel',list[i]===v));cb(v)};el.append(b)})}
+function show(id){$$('.scr').forEach(e=>e.classList.toggle('on',e.id===id))}
+
+function home(anim){
+  const h=new Date().getHours(),t=S.logs[key(ago(0))],b=$('#take'),s=streak();
+  $('#greet').textContent=tr(h<12?'gm':h<18?'ga':'ge')+', '+S.name;
+  $('#dose').textContent=fd(t||S.dose);
+  $('#lab').textContent=t?tr('labT'):tr('labN');
+  b.classList.toggle('done',!!t);b.setAttribute('aria-pressed',!!t);
+  $('#tl').textContent=t?tr('taken'):tr('takeBtn');
+  const uo=undoOK();$('#uw').classList.toggle('on',uo);$('#undo').disabled=!uo;
+  const lt=lastTaken(),le=$('#lt');
+  if(lt)pop(le,lt);else if(!le.firstElementChild)le.innerHTML='<span class="lbl">'+tr('lastLbl')+'</span><span>'+tr('lastNone')+'</span>';
+  pop($('#sv'),s+' '+tr(s==1?'day1':'days'));
+  const w=(new Date().getDay()+6)%7;let o='';
+  for(let i=0;i<7;i++){const k=key(ago(w-i)),on=!!S.logs[k];
+    o+=`<div class="dy${i==w?' td':''}${i>w?' fu':''}"><span>${tr('wdl')[i]}</span><i class="c ${on?'up on':'dn'}${anim&&i==w?' ani':''}">${on?CK:'<b></b>'}</i></div>`}
+  $('#wk').innerHTML=o;
+  if(anim){b.classList.remove('burst');void b.offsetWidth;b.classList.add('burst')}
+}
+function hist(){
+  const k=Object.keys(S.logs).sort(),st=[[tr('tot'),k.length],[tr('cstreak'),streak()],[tr('bst'),bestCalc()],[tr('cons'),consistency()+'%']];
+  $('#stats').innerHTML=st.map(a=>`<div class="st up"><span class="lbl">${a[0]}</span><b>${a[1]}</b></div>`).join('');
+  cal();
+  if(!k.length){$('#list').innerHTML='<div class="lbl">'+tr('recent')+'</div><p class="empty">'+tr('empty')+'</p>';return}
+  const [y,m,d]=k[0].split('-').map(Number),t=new Date();t.setHours(0,0,0,0);
+  const n=Math.min(14,Math.round((t-new Date(y,m-1,d))/864e5)+1);let o='<div class="lbl" style="margin-bottom:6px">'+tr('recent')+'</div>';
+  for(let i=0;i<n;i++){const dt=ago(i),v=S.logs[key(dt)];
+    const nm=i==0?tr('today'):i==1?tr('yest'):i<7?cap(dt.toLocaleDateString(LOC(),{weekday:'long'})):cap(dt.toLocaleDateString(LOC(),{weekday:'short',month:'short',day:'numeric'}));
+    o+=`<div class="li${v?' ok':''}"><span>${nm}</span><span>${v?'✓ '+fd(v):tr('notTaken')}</span></div>`}
+  $('#list').innerHTML=o;
+}
+function prof(){
+  $('#pn').value=S.name;
+  chips($('#pch'),DOSES,S.dose,fd,v=>{S.dose=v;save()});
+  chips($('#tch'),['light','dark'],S.theme,v=>tr(v),v=>{theme(v);save()});
+  chips($('#lch'),['en','es'],LANG,v=>v=='en'?'English':'Español',setLang);
+}
+let calM=null,calSel=null,calN=0;
+const MON=(y,m)=>cap(new Date(y,m,1).toLocaleDateString(LOC(),{month:'long',year:'numeric'}));
+function calCap(){const g=S.logs,T=S.times||{},k=calSel;
+  if(!k){$('#ccap').textContent=tr('calSum',{n:calN,m:new Date(calM.y,calM.m,1).toLocaleDateString(LOC(),{month:'long'})});return}
+  const [y,m,d]=k.split('-').map(Number),v=g[k],ts=T[k],dt=new Date(y,m-1,d).toLocaleDateString(LOC(),{month:'short',day:'numeric'});
+  $('#ccap').textContent=v!==undefined?dt+' · ✓ '+fd(v)+(Number.isFinite(ts)?' · '+pad(new Date(ts).getHours())+':'+pad(new Date(ts).getMinutes()):''):k>key(ago(0))?dt:dt+' · '+tr('noDose')}
+function cal(dir){const t=new Date();if(!calM)calM={y:t.getFullYear(),m:t.getMonth()};
+  const {y,m}=calM,tk=key(t),dim=new Date(y,m+1,0).getDate(),off=(new Date(y,m,1).getDay()+6)%7;let o='';calN=0;
+  for(let i=0;i<off;i++)o+='<i></i>';
+  for(let d=1;d<=dim;d++){const k=y+'-'+pad(m+1)+'-'+pad(d),on=S.logs[k]!==undefined;if(on)calN++;
+    o+=`<button class="cc${on?' on':''}${k==tk?' td':''}${k>tk?' fu':''}${k===calSel?' sl':''}" data-k="${k}" aria-label="${new Date(y,m,d).toLocaleDateString(LOC(),{month:'long',day:'numeric'})}, ${tr(on?'ariaOn':'ariaOff')}">${d}</button>`}
+  const g=$('#cgrid');$('#cmon').textContent=MON(y,m);g.innerHTML=o;calCap();
+  if(dir){g.style.setProperty('--dx',dir*10+'px');g.classList.remove('sw');void g.offsetWidth;g.classList.add('sw')}}
+function calGo(d){const n=new Date(calM.y,calM.m+d,1);calM={y:n.getFullYear(),m:n.getMonth()};calSel=null;cal(d)}
+let chat=[];
+const keysV=()=>Object.keys(S.logs).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)&&k<=key(ago(0))).sort();
+function answer(id){const ks=keysV();if(!ks.length)return tr('a_none');const td=key(ago(0)),p=td.slice(0,7),mo=ks.filter(k=>k.startsWith(p)).length;let r;
+  if(id=='total')r=['a_total',{n:ks.length}];
+  else if(id=='week'){const f=key(ago((new Date().getDay()+6)%7));r=['a_week',{n:ks.filter(k=>k>=f).length}]}
+  else if(id=='month')r=['a_month',{n:mo}];
+  else if(id=='days')r=['a_days',{n:mo}];
+  else if(id=='streak')r=['a_streak',{n:streak()}];
+  else if(id=='best')r=['a_best',{n:bestCalc()}];
+  else if(id=='first'){const[y,m,d]=ks[0].split('-').map(Number);r=['a_first',{d:new Date(y,m-1,d).toLocaleDateString(LOC(),{day:'numeric',month:'long',year:'numeric'})}]}
+  else if(id=='cons'){const ms=p+'-01',st=ks[0]>ms?ks[0]:ms,[y,m,d]=st.split('-').map(Number),n0=new Date();n0.setHours(0,0,0,0);let n=Math.round((n0-new Date(y,m-1,d))/864e5)+1;if(!S.logs[td])n--;if(n<1)return tr('a_nodata');r=['a_cons',{p:Math.min(100,Math.round(mo/n*100))}]}
+  else return tr('a_nodata');
+  return tr(r[0],r[1])}
+const QIDS=['total','week','month','cons','streak','best','first','days'];
+function bub(c,x,nz){const d=document.createElement('div');d.className='msg '+c+(nz?' nz':'');d.textContent=x;$('#chat').append(d)}
+function ask(id){chat.push(id);bub('u',tr('q_'+id));bub('a',answer(id));const v=$('#v-assistant');v.scrollTo({top:v.scrollHeight,behavior:'smooth'})}
+function asst(){$('#chat').innerHTML='';bub('a',tr('a_intro'),1);chat.forEach(id=>{bub('u',tr('q_'+id),1);bub('a',answer(id),1)});
+  const q=$('#qs');q.innerHTML='';QIDS.forEach(id=>{const b=document.createElement('button');b.className='chip up pr qb';b.textContent=tr('q_'+id);b.onclick=()=>ask(id);q.append(b)})}
+const R={home,history:hist,assistant:asst,profile:prof};
+function applyLang(){document.documentElement.lang=LANG;
+  $$('[data-i]').forEach(e=>e.textContent=tr(e.dataset.i));$$('[data-ia]').forEach(e=>e.setAttribute('aria-label',tr(e.dataset.ia)));$$('[data-ip]').forEach(e=>e.placeholder=tr(e.dataset.ip));
+  $$('.cw span').forEach((s,i)=>s.textContent=tr('wdl')[i]);chips($('#wch'),DOSES,wd,fd,v=>wd=v);$('#lt').innerHTML='';
+  if(S.done&&S.name)R[cur](false);if($('#news').classList.contains('on'))fillNews()}
+function setLang(v){if((v!=='en'&&v!=='es')||v===LANG)return;LANG=v;try{localStorage.setItem('cryva_lang',v)}catch(e){}applyLang()}
+function go(v){cur=v;$$('.v').forEach(e=>e.classList.toggle('on',e.id=='v-'+v));$$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==v));R[v]();$('#v-'+v).scrollTop=0}
+
+$$('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+$('#take').onclick=()=>{const k=key(ago(0));if(S.logs[k])return;S.undo={k:k,best:S.best};S.logs[k]=S.dose;(S.times=S.times||{})[k]=Date.now();S.best=bestCalc();save();home(true)};
+$('#start').onclick=()=>{const n=$('#nm').value.trim(),i=$('#nm');if(!n){i.classList.remove('shake');void i.offsetWidth;i.classList.add('shake');i.focus();return}
+  S.name=n;S.dose=wd;S.done=true;save();markSeen();document.activeElement.blur();show('main');go('home')};
+$('#nm').onkeydown=e=>{if(e.key=='Enter')$('#start').click()};
+$('#pn').onchange=e=>{const n=e.target.value.trim();if(n){S.name=n;save()}else e.target.value=S.name};
+$('#pn').onkeydown=e=>{if(e.key=='Enter')e.target.blur()};
+const modal=o=>$('#modal').classList.toggle('on',o);
+$('#reset').onclick=()=>modal(true);$('#cn').onclick=()=>modal(false);
+$('#modal').onclick=e=>{if(e.target.id=='modal')modal(false)};
+document.onkeydown=e=>{if(e.key=='Escape')modal(false)};
+$('#rs').onclick=()=>{try{localStorage.removeItem('cryva')}catch(e){}S=def();wd=5;theme(sysTheme());$('#nm').value='';chips($('#wch'),DOSES,wd,fd,v=>wd=v);modal(false);show('welcome')};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.done)R[cur](false)});
+
+theme(S.theme||sysTheme());
+wd=S.dose;chips($('#wch'),DOSES,wd,fd,v=>wd=v);
+const needNews=()=>S.done&&NEWS[VERSION]&&seen()!==VERSION;
+function fillNews(){const N=NEWS[VERSION][LANG]||NEWS[VERSION].en;$('#nv').textContent='CRYVA V'+VERSION;$('#nt').textContent=N.t;$('#nd').textContent=N.d||'';$('#nc').textContent=N.c||'';$('#ni').innerHTML=N.i.map((n,i)=>`<div class="ni" style="animation-delay:${.15+i*.12}s">${CK.replace('<svg','<svg class="nck"')}<div><b>${n[0]}</b><p>${n[1]}</p></div></div>`).join('')}
+function openNews(){fillNews();$('#news').classList.add('on')}
+$('#undo').onclick=doUndo;
+$('#ng').onclick=()=>{markSeen();$('#news').classList.remove('on')};
+$('#cprev').onclick=()=>calGo(-1);$('#cnext').onclick=()=>calGo(1);
+$('#cgrid').onclick=e=>{const b=e.target.closest('.cc');if(!b)return;calSel=calSel===b.dataset.k?null:b.dataset.k;[...$('#cgrid').children].forEach(c=>c.classList.toggle('sl',c.dataset.k===calSel));calCap()};
+$('#ver').textContent='v'+VERSION;
+applyLang();
+show('splash');
+setTimeout(()=>{if(S.done&&S.name){go('home');show('main');if(needNews())setTimeout(()=>{if(needNews())openNews()},450)}else show('welcome')},2000);
+</script>
+</body>
+</html>
